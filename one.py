@@ -135,8 +135,8 @@ print("Count of Pattern Date for n -", totalN, "days is--> ", patternDateCount()
 # 4(a). Server Count and Server Pattern Count
 serverCount, serverPatternDateCount = serverCountAndPattern()
 print("Number of Servers are-->", serverCount)
-print("Number of Servers for n - ", serverN, "days is--> ", serverPatternDateCount)
+print("Number of Servers for n -", serverN, "days is--> ", serverPatternDateCount)
 # 4(b). Workstation Count and Server Pattern Count
 workstationCount, workstationPatternDateCount = workstationCountAndPattern()
-print("Number of Servers are-->", workstationCount)
-print("Number of Servers for n - ", serverN, "days is--> ", workstationPatternDateCount)
+print("Number of WorkStations are-->", workstationCount)
+print("Number of WorkStations for n -", serverN, "days is--> ", workstationPatternDateCount)
