@@ -28,92 +28,102 @@ print("Enter the number of- Workstation n")
 workstationN = int(input())
 
 # Loading CSV as a dataset using pandas
-file = pd.read_csv(csvFile, usecols=['Pattern Date','Computer Name','Last time status changed','Operating System'])
+file = pd.read_csv(csvFile, usecols=['Pattern Date', 'Computer Name', 'Last time status changed', 'Operating System'])
+
+
 # print(file) #for testing
 
 # Counting unique computer names
 def uniqueComputerNames():
-    file.drop_duplicates(subset='Computer Name',keep='first',inplace=True)
+    file.drop_duplicates(subset='Computer Name', keep='first', inplace=True)
     return len(file['Computer Name'])
 
+
 # maxTime for last time status changed
-maxDate=todayDate-t.timedelta(days=365)
+maxDate = todayDate - t.timedelta(days=365)
 for i in file['Last time status changed']:
     if pd.isnull(i) == False:
         dt = parse(i)
         dt = dt.date()
         if dt >= maxDate:
-            maxDate=dt
+            maxDate = dt
 # assigning maxDate value to todayDate for next part
 todayDate = maxDate
 
 
 # Counting last time system change for n-lastNDays
 def lastTimeSystemChange():
-    dateLimit = todayDate-t.timedelta(days=lastNDays)
+    dateLimit = todayDate - t.timedelta(days=lastNDays)
     co1 = 0
     for i in file['Last time status changed']:
         if pd.isnull(i) == False:
             dt = parse(i)
             dt = dt.date()
             if dt >= dateLimit:
-                co1 = co1+1
+                co1 = co1 + 1
     return co1
 
+
 # maxTime for patternDate
-maxDate=todayDate-t.timedelta(days=365)
+maxDate = todayDate - t.timedelta(days=365)
 for i in file['Pattern Date']:
     if pd.isnull(i) == False:
         dt = parse(i)
         dt = dt.date()
         if dt >= maxDate:
-            maxDate=dt
+            maxDate = dt
 # assigning maxDate value to todayDate for next part
 todayDate = maxDate
 
+
 # Count of pattern date for n-totalN
 def patternDateCount():
-    dateLimit = todayDate-t.timedelta(days=totalN)
+    dateLimit = todayDate - t.timedelta(days=totalN)
     co2 = 0
     for i in file['Pattern Date']:
         if pd.isnull(i) == False:
             dt = parse(i)
             dt = dt.date()
             if dt >= dateLimit:
-                co2 = co2+1
+                co2 = co2 + 1
     return co2
+
 
 # Server count and pattern date
 def serverCountAndPattern():
+    dateLimit = todayDate - t.timedelta(days=serverN)
+    countServer = 0
+    countServerPatternDate = 0
     file['Operating System'] = map(lambda x: x.upper(), file['Operating System'])
-    fileServer = file[(['*.SERVER.*','*.CENTOS.*','*.LINUX.*']).isin(file['Operating System'])]
-    serverCount = len(fileServer['Operating System'])
-    dateLimit = todayDate-t.timedelta(days=serverN)
-    co3 = 0
-    for i in fileServer['Pattern Date']:
-        if pd.isnull(i) == False:
-            dt = parse(i)
-            dt = dt.date()
-            if dt >= dateLimit:
-                co3 = co3+1
-    serverPatternDateCount = co3
-    return serverCount, serverPatternDateCount
+    for i in file['Operating System']:
+        if ((str(i).find('SERVER') != -1) or (str(i).find('CENTOS') != -1) or (str(i).find('LINUX') != -1)):
+            countServer = countServer + 1
+            x = file.loc[file['Operating System'] == i, 'Pattern Date'].iloc[0]
+            if pd.isnull(x) == False:
+                dt = parse(x)
+                dt = dt.date()
+                if dt >= dateLimit:
+                    countServerPatternDate = countServerPatternDate + 1
+    return countServer, countServerPatternDate
+
 
 # Workstation count and pattern date
 def workstationCountAndPattern():
+    dateLimit = todayDate - t.timedelta(days=serverN)
+    countWorkstation = 0
+    countWorkstationPatternDate = 0
     file['Operating System'] = map(lambda x: x.upper(), file['Operating System'])
-    fileWorkstation = file[(['*.SERVER.*','*.CENTOS.*','*.LINUX.*']).notin(file['Operating System'])]
-    workstationCount = len(fileWorkstation['Operating System'])
-    dateLimit = todayDate-t.timedelta(days=workstationN)
-    co4 = 0
-    for i in fileWorkstation['Pattern Date']:
-        if pd.isnull(i) == False:
-            dt = parse(i)
-            dt = dt.date()
-            if dt >= dateLimit:
-                co4 = co4+1
-    workstationPatternDateCount = co4
-    return workstationCount, workstationPatternDateCount
+    for i in file['Operating System']:
+        if ((str(i).find('SERVER') == -1) and (str(i).find('CENTOS') == -1) and (str(i).find('LINUX') == -1)):
+            countWorkstation = countWorkstation + 1
+            x = file.loc[file['Operating System'] == i, 'Pattern Date'].iloc[0]
+            if pd.isnull(x) == False:
+                dt = parse(x)
+                dt = dt.date()
+                if dt >= dateLimit:
+                    countWorkstationPatternDate = countWorkstationPatternDate + 1
+    return countWorkstation, countWorkstationPatternDate
+
 
 # Running functions
 # 1. Unique Computer Names Count
