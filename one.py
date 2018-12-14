@@ -94,9 +94,9 @@ def serverCountAndPattern():
     dateLimit = todayDate - t.timedelta(days=serverN)
     countServer = 0
     countServerPatternDate = 0
-    file['Operating System'] = map(lambda x: x.upper(), file['Operating System'])
+    file['Operating System'] = list(map(lambda x: str(x).upper(), file['Operating System']))
     for i in file['Operating System']:
-        if ((str(i).find('SERVER') != -1) or (str(i).find('CENTOS') != -1) or (str(i).find('LINUX') != -1)):
+        if ('SERVER' in i) or ('CENTOS' in i) or ('LINUX' in i):
             countServer = countServer + 1
             x = file.loc[file['Operating System'] == i, 'Pattern Date'].iloc[0]
             if pd.isnull(x) == False:
@@ -112,9 +112,9 @@ def workstationCountAndPattern():
     dateLimit = todayDate - t.timedelta(days=serverN)
     countWorkstation = 0
     countWorkstationPatternDate = 0
-    file['Operating System'] = map(lambda x: x.upper(), file['Operating System'])
+    file['Operating System'] = list(map(lambda x: str(x).upper(), file['Operating System']))
     for i in file['Operating System']:
-        if ((str(i).find('SERVER') == -1) and (str(i).find('CENTOS') == -1) and (str(i).find('LINUX') == -1)):
+        if ('SERVER' not in i) and ('CENTOS' not in i) and ('LINUX' not in i):
             countWorkstation = countWorkstation + 1
             x = file.loc[file['Operating System'] == i, 'Pattern Date'].iloc[0]
             if pd.isnull(x) == False:
